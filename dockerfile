@@ -17,4 +17,4 @@ COPY --from=build /app/target/*.jar app.jar
 ENV PORT 8080
 EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]
+ENTRYPOINT ["sh", "-c", "export JDBC_URL=$(echo ${DB_URL:-${SPRING_DATASOURCE_URL:-${DATABASE_URL}}} | sed 's/^postgres:\\/\\//jdbc:postgresql:\\/\\//' | sed 's/^postgresql:\\/\\//jdbc:postgresql:\\/\\//'); java -jar app.jar --server.port=${PORT:-8080} --spring.datasource.url=${JDBC_URL}"]
